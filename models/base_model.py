@@ -22,7 +22,9 @@ class BaseModel:
         return f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}"
 
     def save(self):
+        from models import storage
         self.updated_at = datetime.now()
+        storage.save()
 
     def to_dict(self):
         new_dict = self.__dict__.copy()
