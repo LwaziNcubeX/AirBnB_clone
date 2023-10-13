@@ -4,6 +4,22 @@ import cmd
 
 
 class HBNBCommand(cmd.Cmd):
+    """
+    A program that uses the cmd module
+
+    Attributes:
+        prompt: custom prompt
+
+    Methods:
+        do_quit(self, arg):
+            Quit command to exit the program
+        do_EOF(self, arg):
+            EOF command to exit the program
+        help_help(self):
+            Shows help information about commands
+        emptyline(self):
+            empty line
+    """
     prompt = "(hbnb) "
 
     def do_quit(self, arg):
