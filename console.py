@@ -189,15 +189,9 @@ class HBNBCommand(cmd.Cmd):
         attribute_value = args[3]
         key = "{}.{}".format(class_name, instance_id)
         data = storage.all()
-        new_value = ""
-        for i in attribute_value:
-            if i == '\"':
-                continue
-            else:
-                new_value += i
 
         obj = data[key]
-        setattr(obj, attribute_name, new_value)
+        setattr(obj, attribute_name, attribute_value)
 
         data[key] = obj
         storage.save()
