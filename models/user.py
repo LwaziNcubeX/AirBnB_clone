@@ -5,30 +5,15 @@ from models.base_model import BaseModel
 
 class User(BaseModel):
     """
-    A class BaseModel that defines all common attributes/methods
+    A class User that inherits from base model
 
     Attributes:
         email = ""
         password = ""
         first_name = ""
         last_name = ""
-
-    Methods:
-        __init__(self, *args, **kwargs):
-            User Class Constructor
     """
     email = ""
     password = ""
     first_name = ""
     last_name = ""
-
-    def __init__(self, *args, **kwargs):
-        """
-        User Class Constructor
-
-        Args:
-            self:
-            args:
-            Kwargs
-        """
-        super().__init__(*args, **kwargs)
