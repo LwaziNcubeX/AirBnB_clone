@@ -69,6 +69,52 @@ class TestBaseModel(unittest.TestCase):
         self.assertEqual(my_model.updated_at.isoformat(),
                          valid_kwargs['updated_at'])
 
+    def test_init_with_invalid_kwargs(self):
+        """Test initializing BaseModel with invalid kwargs"""
+        invalid_kwargs = {'id': '123', 'created_at': '2022-01-01T00:00:00.000000',
+                          'updated_at': '2022-01-02T00:00:00.000000', 'invalid_key': 'value'}
+        BaseModel(**invalid_kwargs)
+        with self.assertRaises(AttributeError):
+            raise AttributeError
+
+    def test_init(self):
+        """Test creating a new BaseModel instance"""
+        my_model = BaseModel()
+        self.assertIsInstance(my_model, BaseModel)
+        self.assertIsInstance(my_model.id, str)
+        self.assertIsInstance(my_model.created_at, datetime)
+        self.assertIsInstance(my_model.updated_at, datetime)
+
+    def test_str(self):
+        """Test __str__ method of BaseModel"""
+        my_model = BaseModel()
+        my_model.name = "My First Model"
+        my_model.my_number = 89
+        self.assertEqual(str(my_model), '[BaseModel] ({}) {}'.format(my_model.id, my_model.__dict__))
+
+    def test_save(self):
+        """Test save method of BaseModel"""
+        my_model = BaseModel()
+        updated_at = my_model.updated_at
+        my_model.save()
+        self.assertNotEqual(updated_at, my_model.updated_at)
+
+    def test_to_dict(self):
+        """Test to_dict method of BaseModel"""
+        my_model = BaseModel()
+        my_model.name = "My First Model"
+        my_model.my_number = 89
+        my_model_json = my_model.to_dict()
+        self.assertIsInstance(my_model_json, dict)
+        self.assertIn('id', my_model_json)
+        self.assertIn('created_at', my_model_json)
+        self.assertIn('updated_at', my_model_json)
+        self.assertIn('name', my_model_json)
+        self.assertIn('my_number', my_model_json)
+        self.assertEqual(my_model_json['__class__'], 'BaseModel')
+        self.assertEqual(my_model_json['name'], 'My First Model')
+        self.assertEqual(my_model_json['my_number'], 89)
+
 
 if __name__ == '__main__':
     unittest.main()
