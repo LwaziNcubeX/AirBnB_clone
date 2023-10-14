@@ -2,6 +2,7 @@
 """A class FileStorage that works with JSON"""
 import json
 from models.base_model import BaseModel
+from models.user import User
 
 
 class FileStorage:
@@ -59,6 +60,9 @@ class FileStorage:
                 objects = json.load(f)
                 for obj in objects.values():
                     cls_name = obj.pop("__class__")
-                    self.new(globals()[cls_name](**obj))
+                    if cls_name == "User":
+                        self.new(User(**obj))
+                    else:
+                        self.new(globals()[cls_name](**obj))
         except FileNotFoundError:
-            return
+            pass
