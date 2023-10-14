@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """A program that uses the cmd module"""
 import cmd
+import shlex
 
 import models.base_model
 from models import storage
@@ -154,7 +155,7 @@ class HBNBCommand(cmd.Cmd):
         :param arg:
         :return:
         """
-        args = arg.split()
+        args = shlex.split(arg)
         if len(args) < 1:
             print("** class name missing **")
             return
@@ -190,8 +191,15 @@ class HBNBCommand(cmd.Cmd):
         key = "{}.{}".format(class_name, instance_id)
         data = storage.all()
 
+        new_value = ""
+        for i in attribute_value:
+            if i == '\"':
+                continue
+            else:
+                new_value += i
+
         obj = data[key]
-        setattr(obj, attribute_name, attribute_value)
+        setattr(obj, attribute_name, new_value)
 
         data[key] = obj
         storage.save()
