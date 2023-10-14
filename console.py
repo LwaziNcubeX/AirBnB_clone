@@ -2,7 +2,6 @@
 """A program that uses the cmd module"""
 import cmd
 import shlex
-
 import models.base_model
 from models import storage
 from models.base_model import BaseModel
@@ -33,7 +32,6 @@ class HBNBCommand(cmd.Cmd):
 
     def do_EOF(self, arg):
         """EOF command to exit the program"""
-        print()
         return True
 
     def help_help(self):
@@ -41,7 +39,7 @@ class HBNBCommand(cmd.Cmd):
 
     def emptyline(self):
         """An empty line + ENTER shouldn’t execute anything"""
-        pass
+        return False
 
     def do_create(self, arg):
         """Create a new instance of BaseModel,
@@ -50,7 +48,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
         try:
-            model = eval(arg)()
+            model = eval(arg[0])()
             model.save()
             print(model.id)
         except NameError:
@@ -132,9 +130,6 @@ class HBNBCommand(cmd.Cmd):
         :param arg:
         :return:
         """
-        if not arg:
-            print("** class name missing **")
-            return
         try:
             model = storage.all()
             data = []
