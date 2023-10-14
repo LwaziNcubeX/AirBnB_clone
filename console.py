@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 """A program that uses the cmd module"""
 import cmd
-import shlex
-
-import models.base_model
 from models import storage
+import models.base_model
 from models.base_model import BaseModel
+from models.user import User
+import shlex
 
 
 class HBNBCommand(cmd.Cmd):
@@ -71,7 +71,7 @@ class HBNBCommand(cmd.Cmd):
 
         class_name = args[0]
 
-        if class_name != models.base_model.BaseModel.__name__:
+        if class_name not in ["BaseModel", "User"]:
             print("** class doesn't exist **")
             return
 
@@ -105,7 +105,7 @@ class HBNBCommand(cmd.Cmd):
 
         class_name = args[0]
 
-        if class_name != models.base_model.BaseModel.__name__:
+        if class_name not in ["BaseModel", "User"]:
             print("** class doesn't exist **")
             return
 
@@ -140,7 +140,8 @@ class HBNBCommand(cmd.Cmd):
             data = []
             for obj_id in model.keys():
                 obj = model[obj_id]
-                data.append(str(obj))
+                if obj.__class__.__name__ == arg:
+                    data.append(str(obj))
 
             result = '["' + '", "'.join(data) + '"]'
             print(result)
@@ -162,7 +163,7 @@ class HBNBCommand(cmd.Cmd):
 
         class_name = args[0]
 
-        if class_name != models.base_model.BaseModel.__name__:
+        if class_name not in ["BaseModel", "User"]:
             print("** class doesn't exist **")
             return
 
