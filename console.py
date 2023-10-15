@@ -37,6 +37,7 @@ class HBNBCommand(cmd.Cmd):
         return True
 
     def help_help(self):
+        """Help section info about all commands"""
         print("Shows help information about commands")
 
     def emptyline(self):

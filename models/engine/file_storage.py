@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 """A class FileStorage that works with JSON"""
 import json
+
+import models
 from models.base_model import BaseModel
 from models.user import User
 
@@ -28,16 +30,36 @@ class FileStorage:
     __objects = {}
 
     def all(self):
-        """returns the dictionary __objects"""
+        """
+        returns the dictionary __objects
+
+        param arg:
+        return:
+        """
         return self.__objects
 
     def new(self, obj):
-        """sets in __objects the obj with key <obj class name>.id"""
-        key = "{}.{}".format(obj.__class__.__name__, obj.id)
-        self.__objects[key] = obj
+        """
+        sets in __objects the obj with key <obj class name>.id
+
+        param arg:
+        return:
+        """
+        if isinstance(obj, dict) and "__class__" in obj:
+            cls_name = obj.pop("__class__")
+            cls = eval(cls_name)
+            self.__objects[obj["id"]] = cls(**obj)
+        else:
+            key = "{}.{}".format(obj.__class__.__name__, obj.id)
+            self.__objects[key] = obj
 
     def save(self):
-        """Serializes __objects to the JSON file (path: __file_path)"""
+        """
+        Serializes __objects to the JSON file (path: __file_path)
+
+        param arg:
+        return:
+        """
         obj_dict = self.__objects
         try:
             with open(self.__file_path, 'r', encoding='utf-8') as f:
@@ -51,9 +73,11 @@ class FileStorage:
 
     def reload(self):
         """
-        deserializes the JSON file to __objects (only if the JSON file
-        (__file_path) exists
-            otherwise, do nothing.
+        deserializes the JSON file to __objects only if the JSON file
+        (__file_path) exists otherwise, do nothing.
+
+        param arg:
+        return:
         """
         try:
             with open(self.__file_path, 'r', encoding='utf-8') as f:
@@ -61,8 +85,9 @@ class FileStorage:
                 for obj in objects.values():
                     cls_name = obj.pop("__class__")
                     if cls_name == "User":
-                        self.new(User(**obj))
+                        obj = User(**obj)
                     else:
-                        self.new(globals()[cls_name](**obj))
+                        obj = globals()[cls_name](**obj)
+                    self.new(obj)
         except FileNotFoundError:
             pass

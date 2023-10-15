@@ -51,12 +51,20 @@ class BaseModel:
             models.storage.new(self)
 
     def __str__(self):
-        """string representation using dict"""
+        """
+        string representation using dict
+
+        param
+        return: string
+        """
         return f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}"
 
     def save(self):
         """
         updates the public instance attrib updated_at with the current datetime
+
+        param
+        return: Nothing
         """
         self.updated_at = datetime.now()
         models.storage.save()
@@ -65,6 +73,9 @@ class BaseModel:
         """
         returns a dictionary containing all keys/values of __dict__ of
         the instance
+
+        param
+        return:
         """
         new_dict = self.__dict__.copy()
         new_dict['created_at'] = self.created_at.isoformat()
