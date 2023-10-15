@@ -172,6 +172,13 @@ class HBNBCommand(cmd.Cmd):
             return
         attribute_value = args[3].strip('"')
 
+        # Check that the attribute value is a simple type
+        try:
+            if type(eval(attribute_value)) not in [str, int, float]:
+                return False
+        except (NameError, TypeError, ValueError):
+            return False
+
         setattr(instance, attribute_name, attribute_value)
         instance.save()
 
