@@ -1,11 +1,6 @@
 #!/usr/bin/python3
 """A program that uses the cmd module"""
 import cmd
-from models import storage
-import models.base_model
-from models.base_model import BaseModel
-from models.user import User
-import shlex
 from models.amenity import Amenity
 from models.base_model import BaseModel
 from models.city import City
@@ -13,7 +8,8 @@ from models.place import Place
 from models.review import Review
 from models.state import State
 from models.user import User
-
+from models import storage
+import shlex
 
 CLASSES = {
     "Amenity": Amenity,
@@ -21,7 +17,8 @@ CLASSES = {
     "Place": Place,
     "Review": Review,
     "State": State,
-    "User": User
+    "User": User,
+    "BaseModel": BaseModel
 }
 
 
@@ -110,21 +107,25 @@ class HBNBCommand(cmd.Cmd):
 
     def do_all(self, arg):
         """
-        Prints all string representation of all instances based
-        or not on the class name.
+        Prints string representation of all instances based on the class name.
+        If no class name is provided, it prints all instances.
 
         :param arg:
         :return:
         """
-        if not arg:
-            print("** class name missing **")
-            return
-        try:
-            data = [str(obj) for obj in storage.all().values() if obj.__class__.__name__ == arg]
-            result = "[" + ", ".join(data) + "]"
-            print(result)
-        except NameError:
+        args = arg.split()
+        all_objs = storage.all()
+
+        if len(args) > 0 and args[0] not in CLASSES.keys():
             print("** class doesn't exist **")
+            return
+
+        instances = list(all_objs.values()) if \
+            len(args) < 1 else [v for v in all_objs.values() if
+                                type(v).__name__ == args[0]]
+        print([str(obj) for obj in instances])
+
+        return
 
     def do_update(self, arg):
         """
