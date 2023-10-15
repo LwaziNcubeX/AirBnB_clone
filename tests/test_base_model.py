@@ -58,6 +58,31 @@ class TestBaseModel(unittest.TestCase):
         self.assertIn(bm.id, s)
         self.assertIn(str(bm.__dict__), s)
 
+    def test_create_from_dict(self):
+        """
+        Test creating a new BaseModel instance from a dictionary representation
+        """
+        bm = BaseModel()
+        bm_dict = bm.to_dict()
+        new_bm = BaseModel(**bm_dict)
+        self.assertIsInstance(new_bm, BaseModel)
+        self.assertEqual(new_bm.id, bm.id)
+        self.assertEqual(new_bm.created_at, bm.created_at)
+        self.assertEqual(new_bm.updated_at, bm.updated_at)
+
+        # Test with additional attributes
+        bm.name = "test"
+        bm.number = 123
+        bm_dict = bm.to_dict()
+        new_bm = BaseModel(**bm_dict)
+        self.assertEqual(new_bm.__dict__, bm.__dict__)
+
+        # Test with invalid argument
+        invalid_dict = {'__class__': 'BaseModel', 'invalid_attr': True}
+        with self.assertRaises(TypeError):
+            new_bm = BaseModel(**invalid_dict)
+            raise TypeError
+
 
 if __name__ == '__main__':
     unittest.main()
