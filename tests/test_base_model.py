@@ -2,7 +2,10 @@
 """Unittest for BaseModel"""
 
 import datetime
+import json
 import unittest
+
+from models import storage, FileStorage
 from models.base_model import BaseModel
 
 
@@ -80,8 +83,54 @@ class TestBaseModel(unittest.TestCase):
         # Test with invalid argument
         invalid_dict = {'__class__': 'BaseModel', 'invalid_attr': True}
         with self.assertRaises(TypeError):
-            new_bm = BaseModel(**invalid_dict)
+            BaseModel(**invalid_dict)
             raise TypeError
+
+    def test_file_storage_save_reload(self):
+        """
+        Test saving and reloading objects using FileStorage
+        """
+
+        bm = BaseModel()
+        bm.name = "My_First_Model"
+        bm.my_number = 89
+        bm.save()
+
+        with open("file.json", "r") as f:
+            json_data = json.load(f)
+        bm_id = "BaseModel." + bm.id
+        self.assertIn(bm_id, json_data)
+        self.assertEqual(json_data[bm_id]['name'], bm.name)
+        self.assertEqual(json_data[bm_id]['my_number'], bm.my_number)
+
+        # Reload objects from file.json and verify that the object was reloaded
+        reloaded_storage = FileStorage()
+        reloaded_storage.reload()
+        all_objs = reloaded_storage.all()
+        self.assertIn(bm_id, all_objs)
+        reloaded_bm = all_objs[bm_id]
+        self.assertEqual(reloaded_bm.id, bm.id)
+        self.assertEqual(reloaded_bm.created_at, bm.created_at)
+        self.assertEqual(reloaded_bm.updated_at, bm.updated_at)
+        self.assertEqual(reloaded_bm.name, bm.name)
+        self.assertEqual(reloaded_bm.my_number, bm.my_number)
+
+    def test_link_to_file_storage(self):
+        """
+        Test linking BaseModel to FileStorage
+        """
+        self.assertIsInstance(storage, FileStorage)
+        storage.reload()
+
+        bm = BaseModel()
+        bm.save()
+        bm_id = "BaseModel." + bm.id
+        all_objs = storage.all()
+        self.assertIn(bm_id, all_objs)
+
+        with open("file.json", "r") as f:
+            json_data = json.load(f)
+        self.assertIn(bm_id, json_data)
 
 
 if __name__ == '__main__':
