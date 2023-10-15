@@ -1,10 +1,24 @@
 #!/usr/bin/python3
 """A class FileStorage that works with JSON"""
 import json
-
 import models
+from models.amenity import Amenity
 from models.base_model import BaseModel
+from models.city import City
+from models.place import Place
+from models.review import Review
+from models.state import State
 from models.user import User
+
+
+CLASSES = {
+    "Amenity": Amenity,
+    "City": City,
+    "Place": Place,
+    "Review": Review,
+    "State": State,
+    "User": User
+}
 
 
 class FileStorage:
@@ -84,8 +98,8 @@ class FileStorage:
                 objects = json.load(f)
                 for obj in objects.values():
                     cls_name = obj.pop("__class__")
-                    if cls_name == "User":
-                        obj = User(**obj)
+                    if cls_name in CLASSES:
+                        obj = CLASSES[cls_name](**obj)
                     else:
                         obj = globals()[cls_name](**obj)
                     self.new(obj)

@@ -6,6 +6,23 @@ import models.base_model
 from models.base_model import BaseModel
 from models.user import User
 import shlex
+from models.amenity import Amenity
+from models.base_model import BaseModel
+from models.city import City
+from models.place import Place
+from models.review import Review
+from models.state import State
+from models.user import User
+
+
+CLASSES = {
+    "Amenity": Amenity,
+    "City": City,
+    "Place": Place,
+    "Review": Review,
+    "State": State,
+    "User": User
+}
 
 
 class HBNBCommand(cmd.Cmd):
@@ -51,10 +68,10 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
         try:
-            model = eval(arg)()
+            model = CLASSES[arg]()
             model.save()
             print(model.id)
-        except NameError:
+        except KeyError:
             print("** class doesn't exist **")
 
     def do_show(self, arg):
@@ -72,7 +89,7 @@ class HBNBCommand(cmd.Cmd):
 
         class_name = args[0]
 
-        if class_name not in ["BaseModel", "User"]:
+        if class_name not in CLASSES:
             print("** class doesn't exist **")
             return
 
@@ -82,7 +99,7 @@ class HBNBCommand(cmd.Cmd):
 
         instance_id = args[1]
 
-        instance_key = f"{class_name}.{instance_id}"
+        instance_key = "{}.{}".format(class_name, instance_id)
         instance = storage.all().get(instance_key)
 
         if not instance:
@@ -90,40 +107,6 @@ class HBNBCommand(cmd.Cmd):
             return
 
         print(instance)
-
-    def do_destroy(self, arg):
-        """
-        Deletes an instance based on the class name and id.
-        The change is saved into the JSON file.
-
-        :param arg:
-        :return:
-        """
-        args = arg.split()
-        if len(args) < 1:
-            print("** class name missing **")
-            return
-
-        class_name = args[0]
-
-        if class_name not in ["BaseModel", "User"]:
-            print("** class doesn't exist **")
-            return
-
-        if len(args) < 2:
-            print("** instance id missing **")
-            return
-
-        instance_id = args[1]
-
-        instance_key = f"{class_name}.{instance_id}"
-        instance = storage.all().get(instance_key)
-
-        if not instance:
-            print("** no instance found **")
-            return
-        else:
-            storage.all().pop(instance_key)
 
     def do_all(self, arg):
         """
@@ -137,14 +120,8 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
         try:
-            model = storage.all()
-            data = []
-            for obj_id in model.keys():
-                obj = model[obj_id]
-                if obj.__class__.__name__ == arg:
-                    data.append(str(obj))
-
-            result = '["' + '", "'.join(data) + '"]'
+            data = [str(obj) for obj in storage.all().values() if obj.__class__.__name__ == arg]
+            result = "[" + ", ".join(data) + "]"
             print(result)
         except NameError:
             print("** class doesn't exist **")
@@ -164,7 +141,7 @@ class HBNBCommand(cmd.Cmd):
 
         class_name = args[0]
 
-        if class_name not in ["BaseModel", "User"]:
+        if class_name not in CLASSES:
             print("** class doesn't exist **")
             return
 
@@ -174,7 +151,7 @@ class HBNBCommand(cmd.Cmd):
 
         instance_id = args[1]
 
-        instance_key = f"{class_name}.{instance_id}"
+        instance_key = "{}.{}".format(class_name, instance_id)
         instance = storage.all().get(instance_key)
 
         if not instance:
@@ -189,21 +166,44 @@ class HBNBCommand(cmd.Cmd):
             return
 
         attribute_name = args[2]
-        attribute_value = args[3]
-        key = "{}.{}".format(class_name, instance_id)
-        data = storage.all()
+        attribute_value = args[3].strip('"')
 
-        new_value = ""
-        for i in attribute_value:
-            if i == '\"':
-                continue
-            else:
-                new_value += i
+        setattr(instance, attribute_name, attribute_value)
+        instance.save()
 
-        obj = data[key]
-        setattr(obj, attribute_name, new_value)
+    def do_destroy(self, arg):
+        """
+        Deletes an instance based on the class name and id.
+        The change is saved into the JSON file.
 
-        data[key] = obj
+        :param arg:
+        :return:
+        """
+        args = shlex.split(arg)
+        if len(args) < 1:
+            print("** class name missing **")
+            return
+
+        class_name = args[0]
+
+        if class_name not in CLASSES:
+            print("** class doesn't exist **")
+            return
+
+        if len(args) < 2:
+            print("** instance id missing **")
+            return
+
+        instance_id = args[1]
+
+        instance_key = "{}.{}".format(class_name, instance_id)
+        instance = storage.all().get(instance_key)
+
+        if not instance:
+            print("** no instance found **")
+            return
+
+        instance.delete()
         storage.save()
 
 
