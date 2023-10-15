@@ -73,16 +73,10 @@ class FileStorage:
         param arg:
         return:
         """
-        obj_dict = self.__objects
-        try:
-            with open(self.__file_path, 'r', encoding='utf-8') as f:
-                obj_dict = json.load(f)
-        except FileNotFoundError:
-            pass
-        for key, obj in self.__objects.items():
-            obj_dict[key] = obj.to_dict()
         with open(self.__file_path, 'w', encoding='utf-8') as f:
-            json.dump(obj_dict, f)
+            json.dump(
+                {key: value.to_dict() for
+                    key, value in FileStorage.__objects.items()}, f)
 
     def reload(self):
         """
