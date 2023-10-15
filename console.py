@@ -61,15 +61,18 @@ class HBNBCommand(cmd.Cmd):
     def do_create(self, arg):
         """Create a new instance of BaseModel,
         saves it (to the JSON file) and prints the id"""
-        if not arg:
+        args = shlex.split(arg)
+        if len(args) < 1:
             print("** class name missing **")
             return
-        try:
-            model = CLASSES[arg]()
+        class_name = args[0]
+        if class_name not in CLASSES:
+            print("** class doesn't exist **")
+            return
+        else:
+            model = CLASSES[class_name]()
             model.save()
             print(model.id)
-        except KeyError:
-            print("** class doesn't exist **")
 
     def do_show(self, arg):
         """
@@ -162,11 +165,11 @@ class HBNBCommand(cmd.Cmd):
         if len(args) < 3:
             print("** attribute name missing **")
             return
+        attribute_name = args[2]
+
         if len(args) < 4:
             print("** value missing **")
             return
-
-        attribute_name = args[2]
         attribute_value = args[3].strip('"')
 
         setattr(instance, attribute_name, attribute_value)
