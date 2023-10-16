@@ -1,3 +1,5 @@
+![HBNB LOGO](https://github.com/LwaziNcubeX/AirBnB_clone/blob/main/hbnb.png?raw=true)
+
 # HBNB AirBnB Clone - Command Line Interface
 
 This project is a command line interface for interacting with a database of Airbnb-style rental properties. It is designed to be used with the HBNB AirBnB clone project, which provides a database of properties and a web interface for viewing and booking them.
