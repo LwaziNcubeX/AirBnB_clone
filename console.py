@@ -214,7 +214,7 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
             return
 
-        instance.delete()
+        del storage.all()[instance_key]
         storage.save()
 
 
