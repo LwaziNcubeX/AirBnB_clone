@@ -10,7 +10,7 @@
     margin: 100px auto 30px auto;
 }
 
-.filters button {
+button {
     font-size: 18px;
     background-color: #FF5A5F;
     color: #FFFFFF;
@@ -27,12 +27,12 @@ button:hover {
     opacity: 0.9;
 }
 
-.filters h3 {
+h3 {
     font-weight: 600;
     padding-top: 15px;
 }
 
-.filters h4 {
+h4 {
     font-weight: 400;
     font-size: 14px;
 }
