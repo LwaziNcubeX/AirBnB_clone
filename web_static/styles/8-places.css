@@ -36,6 +36,7 @@
     font-size: 30px;
     text-align: center;
     margin-top: 0;
+    margin-bottom: 60px;
 }
 
 .places article:last-child {
@@ -64,4 +65,60 @@ article {
     right: 5px;
     margin: 10px;
 
+}
+
+.information {
+    height: 80px;
+    border-top: 1px solid #DDDDDD;
+    border-bottom: 1px solid #DDDDDD;
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+  
+.max_guest, .number_rooms, .number_bathrooms {
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-left: 20px;
+}
+  
+.max_guest:before {
+    content: "";
+    width: 100px;
+    height: 40px;
+    background-image: url("/web_static/images/icon_group.png");
+    background-repeat: no-repeat;
+    margin-bottom: 10px;
+    margin-left: 40px;
+}
+  
+.number_rooms:before {
+    content: "";
+    width: 100px;
+    height: 40px;
+    background-image: url("/web_static/images/icon_bed.png");
+    background-repeat: no-repeat;
+    margin-bottom: 10px;
+    margin-left: 40px;
+}
+  
+.number_bathrooms:before {
+    content: "";
+    width: 100px;
+    height: 40px;
+    background-image: url("/web_static//images/icon_bath.png");
+    background-repeat: no-repeat;
+    margin-bottom: 10px;
+    margin-left: 40px;
+}
+
+.user {
+    margin-bottom: 10px;
+}
+
+.description {
+    margin-bottom: 10px;
 }
